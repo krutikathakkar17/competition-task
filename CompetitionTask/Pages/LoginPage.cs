@@ -27,7 +27,6 @@ namespace MarsEducationCertificationsSpecflow.Pages
         public void LoginActions(string username, string password)
         {
             _driver.Navigate().GoToUrl("http://localhost:5000/");
-            // //http://localhost:5000/Home
 
             _driver.Manage().Window.Maximize();
 

@@ -43,8 +43,9 @@ namespace Mars_Education_Certifications.Pages
 
                 
 
-        public void AddEducation(String universityName, String country, String title, String degree, String year)
+        public void AddEducation(String country, String universityName, String title, String degree, String year)
         {
+            Console.WriteLine(universityName, country, title, degree, year);
 
             educationButton = _driver.FindElement(educationButtonLocator);
             educationButton.Click();
@@ -54,10 +55,8 @@ namespace Mars_Education_Certifications.Pages
             addNeweduButton = _driver.FindElement(addNeweduButtonLocator);
             addNeweduButton.Click();
 
-           // string popupXPath = "//div[@class='ns-box-inner']";
-          //  string expectedMessage = $"{Education} has been added";
+            Thread.Sleep(9000);
 
-            Thread.Sleep(3000);
 
             
             inputInstElement = _driver.FindElement(inputInstituteLocator);
@@ -97,16 +96,13 @@ namespace Mars_Education_Certifications.Pages
             // Click the "Add" button
             addEdu = _driver.FindElement(addEduLocator);
             addEdu.Click();
-            Thread.Sleep(1000);
-         //   var popupElement = _driver.FindElement(By.XPath(popupXPath));
-        //    string popupText = popupElement.Text;
-         //   Assert.AreEqual(expectedMessage, popupText, $"Pop-up message mismatch. Expected: '{expectedMessage}', but got: '{popupText}'");
-            Thread.Sleep(7000);
+            Thread.Sleep(8000);
         }
 
-         public void VerifyEducationAdded(string expectedCountry, string expectedUniversityName, string expectedTitle, string expectedDegree, string expectedYear)
+         public void VerifyEducationAdded (string expectedCountry, string expectedUniversityName, string expectedTitle, string expectedDegree, string expectedYear)
          {
-             Thread.Sleep(10000);
+         
+            Thread.Sleep(10000);
 
              // XPath to locate all rows in the language table
              string rowXPath = "//table[@class='ui fixed table']/tbody/tr";
@@ -185,10 +181,10 @@ namespace Mars_Education_Certifications.Pages
 
 
         
-           public void EditEducation(String universityName, String country, String title, String degree, String year, String YearNew)
+           public void EditEducation(String country, String universityName, String title, String degree, String year, String YearNew)
            {
 
-              AddEducation(universityName, country, title, degree, year);
+              AddEducation(country,universityName, title, degree, year);
 
             Thread.Sleep(12000);
 
@@ -200,7 +196,7 @@ namespace Mars_Education_Certifications.Pages
 
             // Optionally, save the changes by clicking the update button
 
-            addUpdated = _driver.FindElement(addUpdatedLocator);
+             addUpdated = _driver.FindElement(addUpdatedLocator);
              addUpdated.Click();
               Thread.Sleep(3000);
         
@@ -235,12 +231,12 @@ namespace Mars_Education_Certifications.Pages
         }
 
                 
-           public void DeleteEducation(String universityName, String country, String title, String degree, String year)
+           public void DeleteEducation(String country, String universityName, String title, String degree, String year)
            {
                 educationButton = _driver.FindElement(educationButtonLocator);
                 educationButton.Click();
 
-            AddEducation(universityName, country, title, degree, year);
+            AddEducation(country, universityName, title, degree, year);
 
 
             Thread.Sleep(5000);

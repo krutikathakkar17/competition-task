@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace MarsEduCertAutomation.Utility
 {
@@ -45,16 +46,15 @@ namespace MarsEduCertAutomation.Utility
             _extentReports.Flush();
         }
 
-
-
-        public string addScreenshot(IWebDriver driver, ScenarioContext scenarioContext)
-          {
-              ITakesScreenshot takesScreenshot = (ITakesScreenshot)driver;
-              Screenshot screenshot = takesScreenshot.GetScreenshot();
-              string screenshotLocation = Path.Combine(testResultDir, scenarioContext.ScenarioInfo.Title + ".png");
-      
+        
+        public static string addScreenshot(IWebDriver driver, TestContext context)
+        {
+            ITakesScreenshot takesScreenshot = (ITakesScreenshot)driver;
+            Screenshot screenshot = takesScreenshot.GetScreenshot();
+            string screenshotLocation = Path.Combine(testResultDir, context.Test.Name + ".png");
             screenshot.SaveAsFile(screenshotLocation);
-              return screenshotLocation;
-          } 
+            return screenshotLocation;
+        }
+        
     }
 }

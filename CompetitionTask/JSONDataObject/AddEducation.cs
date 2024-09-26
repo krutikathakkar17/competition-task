@@ -13,8 +13,8 @@ namespace MarsEducationCertificationsSpecflow.JSONDataObject
         public string Title { get; set; } = string.Empty;
         public string Degree { get; set; } = string.Empty;
         public string Year { get; set; } = string.Empty;
-      
 
+        
 
 
 

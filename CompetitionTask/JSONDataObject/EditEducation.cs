@@ -15,7 +15,7 @@ namespace MarsEducationCertificationsTests.JSONDataObject
         public string Year { get; set; } = string.Empty;
         public string YearNew { get; set; } = string.Empty;
 
-
+        
 
     }
 }

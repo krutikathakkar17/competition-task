@@ -53,8 +53,8 @@ namespace Mars_Education_Certifications.Pages
             addNewcertificationButton = _driver.FindElement(addNewcertificationButtonLocator);
             addNewcertificationButton.Click();
 
-          //  string skillPopupXPath = "//div[@class='ns-box-inner']";
-          //  string expectedMessage = $"{skill} has been added to your skills";
+            string certificationPopupXPath = "//div[@class='ns-box-inner']";
+            string expectedMessage = $"{certification} has been added to your certification";
 
             Thread.Sleep(3000);
 
@@ -64,11 +64,6 @@ namespace Mars_Education_Certifications.Pages
 
             inputCerifiedfrom = _driver.FindElement(inputCertifedfromLocator);
             inputCerifiedfrom.SendKeys(certifiedfrom);
-
-            // Find the dropdown element and select the appropriate country
-
-          //  SelectElement countryLevelDropdown = new SelectElement(_driver.FindElement(By.XPath("//select[@name='yearOfGraduation']")));
-          //  countryLevelDropdown.SelectByText(country);
 
             SelectElement yearLevelDropdown = new SelectElement(_driver.FindElement(By.XPath("//select[@name='certificationYear']")));
             yearLevelDropdown.SelectByText(year);
@@ -81,9 +76,9 @@ namespace Mars_Education_Certifications.Pages
             addCertification = _driver.FindElement(addCertificationLocator);
             addCertification.Click();
             Thread.Sleep(1000);
-          //  var popupElement = _driver.FindElement(By.XPath(skillPopupXPath));
-         //   string popupText = popupElement.Text;
-          //  Assert.AreEqual(expectedMessage, popupText, $"Pop-up message mismatch. Expected: '{expectedMessage}', but got: '{popupText}'");
+            var popupElement = _driver.FindElement(By.XPath(certificationPopupXPath));
+            string popupText = popupElement.Text;
+            Assert.AreEqual(expectedMessage, popupText, $"Pop-up message mismatch. Expected: '{expectedMessage}', but got: '{popupText}'");
             Thread.Sleep(5000);
 
         }
