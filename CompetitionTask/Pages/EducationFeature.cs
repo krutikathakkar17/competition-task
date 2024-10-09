@@ -40,8 +40,23 @@ namespace Mars_Education_Certifications.Pages
         private readonly By DeletebtnLocator = By.XPath("//tbody/tr/td[@class='right aligned']/span[@class='button']/i[contains(@class, 'remove icon')]");
         IWebElement DeleteButton;
 
+        
+          public void DeleteAllEducations()
+         {
+           educationButton = _driver.FindElement(educationButtonLocator);
+           educationButton.Click();
 
-                
+           var educationEntries = _driver.FindElements(By.XPath("//table[@class='ui fixed table']/tbody/tr"));
+           foreach (var entry in educationEntries)
+          {
+             DeleteButton = _driver.FindElement(DeletebtnLocator);
+             DeleteButton.Click();
+
+             Thread.Sleep(3000); 
+          }
+         }
+         
+
 
         public void AddEducation(String country, String universityName, String title, String degree, String year)
         {
@@ -57,8 +72,7 @@ namespace Mars_Education_Certifications.Pages
 
             Thread.Sleep(9000);
 
-
-            
+                        
             inputInstElement = _driver.FindElement(inputInstituteLocator);
             inputInstElement.SendKeys(universityName);
 
@@ -71,14 +85,12 @@ namespace Mars_Education_Certifications.Pages
             Thread.Sleep(12000);
 
             SelectElement titleLevelDropdown = new SelectElement(_driver.FindElement(By.XPath("//select[@name='title']")));
-              titleLevelDropdown.SelectByText(title);
+            titleLevelDropdown.SelectByText(title);
 
-           
             Thread.Sleep(9000);
 
-
             inputDegElement = _driver.FindElement(inputDegreeLocator);
-             inputDegElement.SendKeys(degree);
+            inputDegElement.SendKeys(degree);
 
             Thread.Sleep(7000);
 
@@ -87,19 +99,15 @@ namespace Mars_Education_Certifications.Pages
             SelectElement yearLevelDropdown = new SelectElement(_driver.FindElement(By.XPath("//select[@name='yearOfGraduation']")));
             yearLevelDropdown.SelectByText(year);
 
-
             Thread.Sleep(12000);
-
-
-           // Thread.Sleep(3000);
-
+                                  
             // Click the "Add" button
             addEdu = _driver.FindElement(addEduLocator);
             addEdu.Click();
             Thread.Sleep(8000);
         }
 
-         public void VerifyEducationAdded (string expectedCountry, string expectedUniversityName, string expectedTitle, string expectedDegree, string expectedYear)
+         public Boolean VerifyEducationAdded (string expectedCountry, string expectedUniversityName, string expectedTitle, string expectedDegree, string expectedYear)
          {
          
             Thread.Sleep(10000);
@@ -131,10 +139,10 @@ namespace Mars_Education_Certifications.Pages
                  }
              }
 
-             Assert.IsTrue(found, $"Education from  '{expectedCountry}', '{expectedUniversityName}' , '{expectedTitle}', '{expectedDegree}' , '{expectedYear}' not found.");
-
               DeleteButton = _driver.FindElement(DeletebtnLocator);
               DeleteButton.Click();
+
+            return found;
         }
 
 
@@ -142,13 +150,13 @@ namespace Mars_Education_Certifications.Pages
 
         public void AddingEmptyEducation(String country)
            {
-                educationButton = _driver.FindElement(educationButtonLocator);
-                educationButton.Click();
+              educationButton = _driver.FindElement(educationButtonLocator);
+              educationButton.Click();
 
-                Thread.Sleep(8000);
+              Thread.Sleep(8000);
   
-              addNeweduButton = _driver.FindElement(addNeweduButtonLocator);
-              addNeweduButton.Click();
+             addNeweduButton = _driver.FindElement(addNeweduButtonLocator);
+             addNeweduButton.Click();
 
             SelectElement countryLevelDropdown = new SelectElement(_driver.FindElement(By.XPath("//select[@name='country']")));
             countryLevelDropdown.SelectByText(country);
@@ -159,25 +167,23 @@ namespace Mars_Education_Certifications.Pages
 
            }
 
-           public void VerifyNoEmptyEducationAdded()
+           public string VerifyNoEmptyEducationAdded()
            {
                string popupXPath = "//div[@class='ns-box-inner']";
-               string expectedMessage = "Please enter all the fields";
            
                Thread.Sleep(1000);
 
                var popupElement = _driver.FindElement(By.XPath(popupXPath));
                string popupText = popupElement.Text;
 
-               Assert.AreEqual(expectedMessage, popupText, $"Pop-up message mismatch. Expected: '{expectedMessage}', but got: '{popupText}'");
-               Thread.Sleep(5000);
+               return popupText;
+               
            }
 
            private readonly By addUpdatedLocator = By.XPath("//input[@class='ui teal button'][@value='Update']");
         
            IWebElement addUpdated;
-           private object language;
-           private double expectedLevel;
+        
 
 
         
@@ -186,7 +192,7 @@ namespace Mars_Education_Certifications.Pages
 
               AddEducation(country,universityName, title, degree, year);
 
-            Thread.Sleep(12000);
+             Thread.Sleep(12000);
 
               editButton = _driver.FindElement(EditbtnLocator);
               editButton.Click();
@@ -198,12 +204,12 @@ namespace Mars_Education_Certifications.Pages
 
              addUpdated = _driver.FindElement(addUpdatedLocator);
              addUpdated.Click();
-              Thread.Sleep(3000);
+             Thread.Sleep(3000);
         
            }
 
 
-         public void VerifyEducationLeveleditted(String year, String expectedyear)
+         public string VerifyEducationLeveleditted(String year, String expectedyear)
            {
             Thread.Sleep(7000);
 
@@ -216,17 +222,15 @@ namespace Mars_Education_Certifications.Pages
             Thread.Sleep(5000);
 
                // Get the actual level text
-               string actualyear = levelElement.Text;
+            string actualyear = levelElement.Text;
 
             Thread.Sleep(5000);
 
-            // Verify the level
-            Assert.AreEqual(expectedyear, actualyear, $" Year of Graduation for was not updated correctly.");
-
-            Thread.Sleep(5000);
 
             DeleteButton = _driver.FindElement(DeletebtnLocator);
             DeleteButton.Click();
+
+            return actualyear;
 
         }
 
@@ -249,15 +253,15 @@ namespace Mars_Education_Certifications.Pages
                           
            }
 
-           public void VerifyEducationDeleted(string DeletedTitle)
+           public int VerifyEducationDeleted(string DeletedTitle)
            {
                Thread.Sleep(5000);
                // Create the XPath to find the education row
                string xpath = $"//tbody/tr[td[text()='{DeletedTitle}']]";
                var educationElements = _driver.FindElements(By.XPath(xpath));
-               // Verify that no elements are found for the deleted education
-               Assert.IsTrue(educationElements.Count == 0, $"B.Sc '{DeletedTitle}' was not deleted successfully.");
-               Thread.Sleep(8000);
+            // Verify that no elements are found for the deleted education
+                return educationElements.Count;
+               
            } 
 
 

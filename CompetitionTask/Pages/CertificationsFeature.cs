@@ -34,15 +34,30 @@ namespace Mars_Education_Certifications.Pages
         private readonly By addCertificationLocator = By.XPath("//input[@value='Add']");
         IWebElement addCertification;
 
-         private readonly By EditbtnLocator = By.XPath("//tbody/tr/td[@class='right aligned']/span[@class='button']/i[contains(@class, 'outline write icon')]");
-         IWebElement editButton;
+        private readonly By EditbtnLocator = By.XPath("//tbody/tr/td[@class='right aligned']/span[@class='button']/i[contains(@class, 'outline write icon')]");
+        IWebElement editButton;
 
 
-         private readonly By DeletebuttonLocator = By.XPath("//tbody/tr/td[@class='right aligned']/span[@class='button']/i[contains(@class, 'remove icon')]");
-         IWebElement deleteBtn;
+        private readonly By DeletebuttonLocator = By.XPath("//tbody/tr/td[@class='right aligned']/span[@class='button']/i[contains(@class, 'remove icon')]");
+        IWebElement deleteBtn;
+
+
         
+         public void DeleteAllCertifications()
+         {
+            cerificationsButton = _driver.FindElement(certificationsButtonLocator);
+            cerificationsButton.Click();
 
+            var certificationEntries = _driver.FindElements(By.XPath("//table[@class='ui fixed table']/tbody/tr"));
+            foreach (var entry in certificationEntries)
+             {
+                deleteBtn = _driver.FindElement(DeletebuttonLocator);
+                deleteBtn.Click();
 
+                Thread.Sleep(3000); 
+             }
+         }
+         
 
 
         public void AddCertifications(String certification, String certifiedfrom, String year)
@@ -52,9 +67,6 @@ namespace Mars_Education_Certifications.Pages
 
             addNewcertificationButton = _driver.FindElement(addNewcertificationButtonLocator);
             addNewcertificationButton.Click();
-
-            string certificationPopupXPath = "//div[@class='ns-box-inner']";
-            string expectedMessage = $"{certification} has been added to your certification";
 
             Thread.Sleep(3000);
 
@@ -76,15 +88,12 @@ namespace Mars_Education_Certifications.Pages
             addCertification = _driver.FindElement(addCertificationLocator);
             addCertification.Click();
             Thread.Sleep(1000);
-            var popupElement = _driver.FindElement(By.XPath(certificationPopupXPath));
-            string popupText = popupElement.Text;
-            Assert.AreEqual(expectedMessage, popupText, $"Pop-up message mismatch. Expected: '{expectedMessage}', but got: '{popupText}'");
-            Thread.Sleep(5000);
+                                       
 
         }
       
 
-        public void VerifyCertificationsAdded(string expectedCertificate, string expectedCertifiedfrom, string expectedYear)
+        public Boolean VerifyCertificationsAdded(string expectedCertificate, string expectedCertifiedfrom, string expectedYear)
         {
             Thread.Sleep(5000);
 
@@ -114,10 +123,11 @@ namespace Mars_Education_Certifications.Pages
                 }
             }
 
-            Assert.IsTrue(found, $"Certificate from '{expectedCertificate}', '{expectedCertifiedfrom}', '{expectedYear}' not found.");
-
+         
               deleteBtn = _driver.FindElement(DeletebuttonLocator);
               deleteBtn.Click();
+
+            return found;
         }
 
 
@@ -151,13 +161,11 @@ namespace Mars_Education_Certifications.Pages
         }
 
         
-        public void VerifyNoDuplicateCertificationAdded()
+        public string VerifyNoDuplicateCertificationAdded()
         {
             {
-                
-                
+                                
                 string popupXPath = "//div[@class='ns-box-inner']";
-                string expectedMessage = "This information is already exist.";
                
 
                 Thread.Sleep(1000);
@@ -165,12 +173,7 @@ namespace Mars_Education_Certifications.Pages
                 var popupElement = _driver.FindElement(By.XPath(popupXPath));
                 string popupText = popupElement.Text;
 
-                Assert.AreEqual(expectedMessage, popupText, $"Pop-up message mismatch. Expected: '{expectedMessage}', but got: '{popupText}'");
-                Thread.Sleep(5000);
-
-
-                   deleteBtn = _driver.FindElement(DeletebuttonLocator);
-                  deleteBtn.Click();
+                return popupText;
 
 
             }
@@ -184,8 +187,8 @@ namespace Mars_Education_Certifications.Pages
         public void EditCertifications(String certification, String CertifiedFrom, String year, String CertificationNew)
         {
             //Edit the Skills
-           cerificationsButton = _driver.FindElement(certificationsButtonLocator);
-           cerificationsButton.Click();
+            cerificationsButton = _driver.FindElement(certificationsButtonLocator);
+            cerificationsButton.Click();
             Thread.Sleep(7000);
 
             AddCertifications(certification, CertifiedFrom, year);
@@ -193,8 +196,8 @@ namespace Mars_Education_Certifications.Pages
             
             // Click the update button 
 
-              editButton = _driver.FindElement(EditbtnLocator);
-              editButton.Click();
+             editButton = _driver.FindElement(EditbtnLocator);
+             editButton.Click();
 
             IWebElement certificateInput = _driver.FindElement(By.XPath("//input[@placeholder='Certificate or Award']"));
 
@@ -210,7 +213,7 @@ namespace Mars_Education_Certifications.Pages
 
         }
 
-        public void VerifyCertificateEdited(string CertificationNew, string expectedCertification)
+        public string VerifyCertificateEdited(string actualCertifiedfrom, string expectedCertification)
         {
            cerificationsButton = _driver.FindElement(certificationsButtonLocator);
            cerificationsButton.Click();
@@ -221,19 +224,21 @@ namespace Mars_Education_Certifications.Pages
             IWebElement certifiedFromElement = _driver.FindElement(By.XPath(xpath));
 
             // Get the actual level text
-            string actualCertifiedfrom = expectedCertification;
+            string actualCertifiedfromText = certifiedFromElement.Text;
 
             // Verify the level
-            if (expectedCertification != actualCertifiedfrom)
+            if (expectedCertification != actualCertifiedfromText)
             {
-                throw new Exception($"Skill level for '{expectedCertification}' was not updated correctly. Expected: {expectedCertification}, Actual: {actualCertifiedfrom}");
+                throw new Exception($"Skill level for '{expectedCertification}' was not updated correctly. Expected: {expectedCertification}, Actual: {actualCertifiedfromText}");
             }
 
-            Thread.Sleep(5000);
+              Thread.Sleep(5000);
 
 
               deleteBtn = _driver.FindElement(DeletebuttonLocator);
               deleteBtn.Click();
+
+            return actualCertifiedfromText;
 
         }
 
@@ -259,15 +264,17 @@ namespace Mars_Education_Certifications.Pages
         }
 
         
-        public void VerifyCertificateDeleted(string certificate)
+        public int VerifyCertificateDeleted(string certificate)
         {
             Thread.Sleep(5000);
             // Create the XPath to find the skill row
             string xpath = $"//tbody/tr[td[text()='{certificate}']]";
             var skillElements = _driver.FindElements(By.XPath(xpath));
-            // Verify that no elements are found for the deleted skill
-            Assert.IsTrue(skillElements.Count == 0, $"Skill '{certificate}' was not deleted successfully.");
+
+                 
             Thread.Sleep(5000);
+
+            return skillElements.Count;
         }
     }
 }
