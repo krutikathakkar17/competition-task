@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 
 
-namespace Mars_Education_Certifications.Pages
+namespace Mars_Certifications.Pages
 {
     public class CertificationsFeature
     {

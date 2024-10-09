@@ -2,7 +2,8 @@
 using OpenQA.Selenium;
 using NUnit.Framework;
 using System.Diagnostics.Metrics;
-namespace Mars_Education_Certifications.Pages
+
+namespace Mars_Education.Pages
 {
 
     public class EducationFeature
